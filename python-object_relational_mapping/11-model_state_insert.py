@@ -1,52 +1,32 @@
 #!/usr/bin/python3
-"""
-Script that adds the State object 'Louisiana' to the database `hbtn_0e_6_usa`
-and prints its new `id`.
-
-Arguments:
-    mysql username (str): The MySQL username.
-    mysql password (str): The MySQL password.
-    database name (str): The name of the database.
-
-Example usage:
-    ./11-model_state_insert.py root root hbtn_0e_6_usa
-"""
-
-import sys
+'''model state insert '''
+from model_state import Base, State
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from model_state import Base, State
+import sys
+
 
 if __name__ == "__main__":
-    """
-    Main code execution: Connects to the database, adds a new State object,
-    commits the transaction, and prints the new State's id.
-    """
-    # Get MySQL credentials and database details from command-line arguments
+    # Get arguments
     username = sys.argv[1]
     password = sys.argv[2]
     database = sys.argv[3]
 
-    # Create the engine to connect to the database
+    # Connect to the MySQL server
     engine = create_engine(
-        'mysql+mysqldb://{}:{}@localhost/{}'.format(username, password, database),
-        pool_pre_ping=True
+        f'mysql+mysqldb://{username}:{password}@localhost:3306/{database}'
     )
 
-    # Create a configured "Session" class
+    # Create a session
     Session = sessionmaker(bind=engine)
-
-    # Create a Session instance
     session = Session()
 
-    # Create a new State object and add it to the session
+    # Create a new state
     new_state = State(name="Louisiana")
+
+    # Add the state to the session and commit
     session.add(new_state)
     session.commit()
 
-    # Print the new State's id
+    # Print the new state's id
     print(new_state.id)
-
-    # Close the session
-    session.close()
-
